@@ -32,7 +32,7 @@ republica. `vite.config.js` usa `base: './'`, então funciona tanto em
 **Tudo em `src/data.js`.** Nenhum componente precisa ser tocado pra mudar conteúdo.
 
 ```js
-// produto — o grid é de 2 colunas; um 3º item cria uma linha nova
+// produto - o grid é de 2 colunas; um 3º item cria uma linha nova
 { id: 'x', name: 'Nome', variant: 'Cor cinza', rating: '4,8',
   reviews: '127 avaliações', store: 'Mercado Livre',
   why: 'Por que eu uso.', photo: 'produtos/foto.png', url: 'https://...' }
@@ -46,7 +46,7 @@ inicial** (`produtos/foto.png`), pra funcionar em subdiretório do Pages.
 Tema terminal, seguindo o guia `codex/workspace/GUIA-UI-NAO-PARECER-FEITA-POR-IA.md`:
 
 - **Paleta própria em OKLCH.** Fundo é carvão levemente esverdeado
-  (`oklch(0.168 0.010 155)`), **não preto puro** — é o que separa terminal de
+  (`oklch(0.168 0.010 155)`), **não preto puro** - é o que separa terminal de
   "fundo #000 de template". Um único accent: verde fósforo.
 - **JetBrains Mono** servida junto do site, com ligaduras desligadas.
 - **Radius 0** em tudo. Bordas de 1px, sem sombra difusa.
@@ -55,13 +55,17 @@ Tema terminal, seguindo o guia `codex/workspace/GUIA-UI-NAO-PARECER-FEITA-POR-IA
 - Toques de shell onde ajudam a ler, não como fantasia: prompt no topo com
   cursor piscando, `~/` antes do nome, `#` no comentário, `$` no botão,
   `./` nos links do rodapé.
-- Foto do produto sobre painel claro com `object-fit: contain` — são recortes
+- Foto do produto sobre painel claro com `object-fit: contain` - são recortes
   quase quadrados, `cover` decepava o produto.
 
 ## Grid
 
-Duas colunas fixas, já no celular (`repeat(2, minmax(0,1fr))`) — a 390px cada
-card fica com 172px. Um terceiro produto cria uma segunda linha sozinho.
+Responsivo: **1 coluna** até 30rem (480px), **2** de 30rem a 52rem, **3** acima
+de 52rem (832px) - onde a página também alarga de 44rem pra 66rem.
+
+As fotos usam `object-fit: contain` com 6px de respiro, e não `cover`: são
+recortes de produto com proporções variadas, e o corte do `cover` comia a
+lateral da kalimba e os pads de baixo do hand grip.
 
 Nos cards estreitos a contagem de avaliações não cabe ao lado da nota, então ela
 vai pra própria linha via `flex-basis:100%`.
@@ -71,7 +75,7 @@ vai pra própria linha via `flex-basis:100%`.
 Os 21 estão completos (foto, nota, avaliações, preço e texto). Pra incluir mais um:
 
 1. adicione o objeto em `products` no `src/data.js` com um `id` novo;
-2. salve a foto em `src/produtos/<id>.png` — ela se liga sozinha pelo nome do
+2. salve a foto em `src/produtos/<id>.png` - ela se liga sozinha pelo nome do
    arquivo (`src/fotos.js` faz um glob). Aceita `.png`, `.jpg` e `.webp`;
 3. preencha `rating`, `reviews`, `price` (e `was`, se tiver preço cheio) e `why`.
 

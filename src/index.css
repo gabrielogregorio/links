@@ -1,0 +1,262 @@
+/* ============================================================
+   Tema terminal. Fósforo verde sobre carvão - não preto puro,
+   que é o que separa terminal de "fundo #000 de template".
+   Paleta própria em OKLCH; um único accent.
+   ============================================================ */
+
+:root{
+  color-scheme:dark;
+
+  --bg:        oklch(0.168 0.010 155);   /* carvão levemente esverdeado */
+  --bg-raised: oklch(0.212 0.012 155);
+  --bg-panel:  oklch(0.905 0.006 120);   /* painel claro só pra foto do produto */
+
+  --fg:       oklch(0.905 0.020 150);
+  --fg-soft:  oklch(0.720 0.022 150);
+  --fg-faint: oklch(0.545 0.020 150);
+
+  --rule:      oklch(0.300 0.016 155);
+  --rule-firm: oklch(0.395 0.022 155);
+
+  --green: oklch(0.815 0.190 145);       /* accent: prompt, nota, cursor */
+  --amber: oklch(0.800 0.140 80);        /* só nos avisos */
+
+  --s1:0.22rem; --s2:0.44rem; --s3:0.66rem; --s4:1.1rem;
+  --s5:1.76rem; --s6:2.64rem; --s7:3.6rem;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{-webkit-text-size-adjust:100%}
+
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:"JetBrains Mono Variable",ui-monospace,"SF Mono",Menlo,monospace;
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  font-variant-ligatures:none;
+}
+
+/* scanline + grão bem discretos: dá CRT sem virar fantasia */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:2;
+  background-image:
+    repeating-linear-gradient(
+      oklch(1 0 0 / 0.016) 0 1px,
+      transparent 1px 3px
+    );
+}
+
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+.page{
+  position:relative;z-index:1;
+  max-width:44rem;
+  margin-inline:auto;
+  padding:
+    calc(var(--s5) + env(safe-area-inset-top)) var(--s4)
+    calc(var(--s7) + env(safe-area-inset-bottom));
+}
+
+/* ------------------------------ cabeçalho ------------------------------ */
+
+.head{display:flex;align-items:center;gap:var(--s4);margin-bottom:var(--s4)}
+
+.portrait{
+  width:62px;height:62px;flex:0 0 auto;
+  object-fit:cover;
+  border-radius:50%;
+  box-shadow:0 0 0 1px var(--rule-firm);
+}
+
+.name{
+  font-size:1.5rem;
+  font-weight:600;
+  line-height:1.1;
+  letter-spacing:-0.02em;
+}
+.name::before{content:"~/";color:var(--fg-faint);font-weight:400}
+
+.role{
+  margin-top:2px;
+  font-size:0.75rem;
+  color:var(--fg-faint);
+}
+
+/* texto de abertura */
+.intro{
+  color:var(--fg-soft);
+  font-size:0.85rem;
+  line-height:1.65;
+  max-width:54ch;
+  margin-top:var(--s4);
+  text-wrap:pretty;
+}
+
+/* aviso de afiliado - perto dos produtos, não escondido no rodapé */
+.aviso{
+  font-size:0.72rem;
+  color:var(--fg-faint);
+  line-height:1.55;
+  max-width:56ch;
+  margin-top:var(--s4);
+}
+.aviso::before{content:"# ";color:var(--amber)}
+
+/* ------------------------------ produtos ------------------------------ */
+
+.picks{margin-top:var(--s6)}
+
+.picks-head{
+  display:flex;align-items:baseline;gap:var(--s2);
+  padding-bottom:var(--s2);
+  border-bottom:1px solid var(--rule);
+  margin-bottom:var(--s2);
+}
+.picks-title{
+  font-size:0.8rem;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--fg);
+}
+.picks-count{font-size:0.75rem;color:var(--fg-faint);margin-left:auto}
+
+/* 1 coluna no celular estreito, 2 a partir de 30rem, 3 a partir de 52rem */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:var(--s4);
+}
+@media (min-width:30rem){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3)}
+}
+@media (min-width:52rem){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4)}
+}
+
+.pick{
+  display:flex;flex-direction:column;
+  border:1px solid var(--rule);
+  background:var(--bg);
+  transition:border-color .18s ease,background .18s ease,transform .18s cubic-bezier(.2,.7,.3,1);
+}
+.pick:hover{border-color:var(--green);background:var(--bg-raised);transform:translateY(-2px)}
+
+.frame{
+  display:block;position:relative;overflow:hidden;
+  background:var(--bg-panel);
+  aspect-ratio:1/1;
+  border-bottom:1px solid var(--rule);
+}
+/* ocupa o máximo da moldura sem cortar: com `cover` a kalimba perdia a lateral
+   e o hand grip perdia os pads de baixo. O respiro é mínimo, só pra imagem não
+   encostar na borda. */
+.frame img{
+  width:100%;height:100%;
+  object-fit:contain;
+  padding:6px;
+  transition:transform .45s cubic-bezier(.2,.7,.3,1);
+}
+.pick:hover .frame img{transform:scale(1.05)}
+
+/* produto ainda sem foto: moldura tracejada, sem fundo claro gritando */
+.frame--vazia{
+  background:var(--bg-raised);
+  display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px var(--rule);
+}
+.sem-foto{
+  font-size:0.68rem;color:var(--fg-faint);
+  letter-spacing:0.04em;
+}
+
+.pick-body{
+  display:flex;flex-direction:column;
+  gap:var(--s1);
+  padding:var(--s3);
+  flex:1;
+}
+
+.pick-name{
+  font-size:0.83rem;
+  font-weight:500;
+  line-height:1.35;
+  letter-spacing:-0.01em;
+}
+
+/* no card estreito a contagem não cabe ao lado da nota: vai pra própria linha */
+.pick-rating{
+  display:flex;align-items:center;flex-wrap:wrap;gap:0 4px;
+  color:var(--green);
+  font-size:0.78rem;
+  font-weight:600;
+}
+.pick-rating .reviews{
+  flex-basis:100%;
+  color:var(--fg-faint);font-weight:400;font-size:0.69rem;
+}
+
+/* preço em branco forte; o verde continua sendo só da nota */
+.pick-price{
+  display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px;
+  font-size:0.92rem;font-weight:600;
+  color:var(--fg);
+  margin-top:var(--s1);
+}
+.pick-price .was{
+  color:var(--fg-faint);font-weight:400;font-size:0.72rem;
+  text-decoration-thickness:1px;
+}
+
+.pick-why{
+  color:var(--fg-soft);
+  font-size:0.735rem;
+  line-height:1.55;
+  text-wrap:pretty;
+}
+
+.pick-cta{
+  margin-top:auto;
+  padding-top:var(--s2);
+  font-size:0.72rem;
+  color:var(--fg-faint);
+  display:flex;align-items:baseline;gap:5px;
+  transition:color .16s ease;
+}
+.pick-cta::before{content:"$";color:var(--green)}
+.pick:hover .pick-cta{color:var(--green)}
+
+/* ------------------------------ rodapé ------------------------------ */
+
+.foot{
+  margin-top:var(--s6);
+  padding-top:var(--s3);
+  border-top:1px solid var(--rule);
+  display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);
+  align-items:baseline;
+}
+
+.foot a{
+  font-size:0.75rem;color:var(--fg-soft);
+  transition:color .16s ease;
+}
+.foot a::before{content:"← ";color:var(--fg-faint)}
+.foot a:hover{color:var(--green)}
+
+.foot .copy{
+  flex-basis:100%;
+  font-size:0.7rem;color:var(--fg-faint);
+  margin-top:var(--s2);
+}
+
+@media (min-width:52rem){
+  .page{max-width:66rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
